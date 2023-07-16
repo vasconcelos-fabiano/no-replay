@@ -13,7 +13,7 @@ DIRETORIO_BASE = sys.argv[1];
 
 def label():
     print("\033[1;33mNo-Replay 0.1\033[0m\n\033[1mBy Fabiano Vasconcelos\033[0m | \033[36mwww.fabianovasconcelos.com\033[0m");
-    print("Copyright Fabiano Vasconcelos © 2023 Todos os direitos reservados.");
+    print("Copyright Fabiano Vasconcelos © 2023 Todos os direitos reservados.\n");
 
 # Verificar se o número de argumentos é suficiente
 if len(sys.argv) < 2:
@@ -33,7 +33,9 @@ def listar_arquivos(pasta):
     for root, dirs, files in os.walk(pasta):
         for file in files:
             caminho_completo = os.path.join(root, file);
-            print(caminho_completo);
+            retorno = calcular_md5(caminho_completo);
+            print(retorno);
+            print(caminho_completo+"\n");
 
 def main():
     os.system('clear');
