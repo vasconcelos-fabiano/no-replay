@@ -8,6 +8,7 @@ Data: 10/07/2023
 import os;
 import hashlib;
 import sys;
+from tqdm import tqdm;
 
 DIRETORIO_BASE = sys.argv[1];
 
@@ -31,21 +32,20 @@ def is_valid_path(path):
 def listar_arquivos(pasta):
     lista_arquivos = [];
     for root, dirs, files in os.walk(pasta):
-
         # Ignorar diretórios começados com ponto
         dirs[:] = [d for d in dirs if not d.startswith('.')]
-        
-        for file in files:
+        for file in tqdm(files, desc="Scanning files", unit="file"):
             if not file.startswith('.'):
-                caminho_completo = os.path.join(root, file);
-                lista_arquivos.append(caminho_completo);
-    return lista_arquivos;
+                caminho_completo = os.path.join(root, file)
+                lista_arquivos.append(caminho_completo)
+    return lista_arquivos
 
 def detectar_arquivos_duplicados(lista_arquivos):
+    total_arquivos = len(lista_arquivos);
     hash_arquivos = {};
     duplicatas = {};
     contador = 0;
-    for arquivo in lista_arquivos:
+    for idx, arquivo in enumerate(tqdm(lista_arquivos, desc="Detecting duplicates", unit="file"), 1):    
         hash = calcular_md5(arquivo);
         if hash in hash_arquivos:
             contador += 1;
@@ -55,7 +55,6 @@ def detectar_arquivos_duplicados(lista_arquivos):
                 duplicatas[hash] = [hash_arquivos[hash], arquivo];
         else:
             hash_arquivos[hash] = arquivo;
-    
     return contador, duplicatas;
 
 # Exibir os arquivos duplicados e seus caminhos
