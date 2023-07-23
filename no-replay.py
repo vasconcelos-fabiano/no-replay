@@ -10,6 +10,8 @@ import hashlib;
 import sys;
 from tqdm import tqdm;
 
+#import time;
+
 DIRETORIO_BASE = sys.argv[1];
 
 def label():
@@ -36,8 +38,9 @@ def listar_arquivos(pasta):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         for file in tqdm(files, desc="Scanning files", unit="file"):
             if not file.startswith('.'):
-                caminho_completo = os.path.join(root, file)
-                lista_arquivos.append(caminho_completo)
+                caminho_completo = os.path.join(root, file);
+                if os.path.exists(caminho_completo):
+                    lista_arquivos.append(caminho_completo)
     return lista_arquivos
 
 def detectar_arquivos_duplicados(lista_arquivos):
@@ -45,7 +48,11 @@ def detectar_arquivos_duplicados(lista_arquivos):
     hash_arquivos = {};
     duplicatas = {};
     contador = 0;
-    for idx, arquivo in enumerate(tqdm(lista_arquivos, desc="Detecting duplicates", unit="file"), 1):    
+    #for idx, arquivo in enumerate(tqdm(lista_arquivos, desc="Detecting duplicates", unit="file"), 1):
+    for idx, arquivo in enumerate(tqdm(lista_arquivos, desc="Detecting duplicates", unit="file"), 1):
+        if not os.path.exists(arquivo):
+            continue
+
         hash = calcular_md5(arquivo);
         if hash in hash_arquivos:
             contador += 1;
@@ -55,6 +62,9 @@ def detectar_arquivos_duplicados(lista_arquivos):
                 duplicatas[hash] = [hash_arquivos[hash], arquivo];
         else:
             hash_arquivos[hash] = arquivo;
+        
+        #time.sleep(1);
+    
     return contador, duplicatas;
 
 # Exibir os arquivos duplicados e seus caminhos
