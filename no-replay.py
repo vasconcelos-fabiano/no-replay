@@ -90,6 +90,11 @@ def main():
     label();
 
 def calcular_md5(arquivo):
+    if not os.path.isfile(arquivo):
+        print(f"ERRO: O caminho fornecido não é um arquivo válido: {arquivo}")
+        return None
+    print(f"Calculando MD5 para o arquivo: {arquivo}")
+
     hash_md5 = hashlib.md5()
     with open(arquivo, "rb") as f:
         for chunk in iter(lambda: f.read(4096), b""):
